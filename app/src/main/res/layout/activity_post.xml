@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context=".PostActivity">
+
+    <include
+        android:id="@+id/update_post_page_toolbar"
+        layout="@layout/app_bar_layout" />
+
+    <EditText
+        android:id="@+id/location"
+        android:layout_width="match_parent"
+        android:layout_height="66dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/post_category"
+        android:backgroundTint="@android:color/background_light"
+        android:editable="false"
+        android:ems="10"
+        android:hint="Add Location"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/background_light"
+        android:textSize="16dip" />
+
+
+    <EditText
+        android:id="@+id/post_name"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="42dp"
+        android:backgroundTint="@android:color/background_light"
+        android:ems="10"
+        android:hint="Write your name"
+        android:padding="10dp"
+        android:paddingTop="10dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/background_light"
+        android:textSize="16dip" />
+
+
+    <EditText
+        android:id="@+id/post_email"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/post_name"
+        android:backgroundTint="@android:color/background_light"
+        android:ems="10"
+        android:hint="email address"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/background_light"
+        android:textSize="16dip" />
+
+    <EditText
+        android:id="@+id/post_description"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/post_email"
+        android:backgroundTint="@android:color/background_light"
+        android:ems="10"
+        android:hint="Write Something Here"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/background_light"
+        android:textSize="16dip" />
+
+    <EditText
+        android:id="@+id/post_outcome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="252dp"
+        android:backgroundTint="@android:color/background_light"
+        android:ems="10"
+        android:hint="Desired outcome"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/background_light"
+        android:textSize="16dip" />
+
+
+    <EditText
+        android:id="@+id/post_category"
+        android:layout_width="match_parent"
+        android:layout_height="66dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/post_outcome"
+        android:layout_marginTop="-200dp"
+        android:backgroundTint="@android:color/background_light"
+        android:ems="10"
+        android:hint="category"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/background_light"
+        android:textSize="16dip" />
+
+
+    <Button
+        android:id="@+id/update_post_button"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="23dp"
+        android:background="@drawable/button"
+        android:padding="10dp"
+        android:text="Update post"
+        android:textColor="@android:color/background_light"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btn_location"
+        android:layout_width="111dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/update_post_button"
+        android:layout_marginStart="24dp"
+        android:background="@drawable/button"
+        android:padding="10dp"
+        android:text="location"
+        android:textColor="@android:color/background_light"
+        android:textSize="18sp" />
+
+    <Spinner
+        android:id="@+id/spinner2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/post_outcome"
+        android:layout_marginTop="-233dp"
+        android:background="@android:color/background_light"
+        android:entries="@array/names" />
+
+
+</RelativeLayout>

@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">network</string>
+    <string name="drawer_open">Drawer Open</string>
+    <string name="drawer_close">Drawer Close</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="apps_name1">Email</string>
+    <string name="what_s_on_your_mind">Type your message here!</string>
+    rules_text
+    <string name="rules_text">Terms and Conditions \n
+        1. Please do not post scam posts. \n
+        2. You are responsible for all the info you provide.\n
+        3. Please provide truthful information always\n
+        4. Please respect privacy of 3rd party\n
+        5. Please understand that for all the actions to be taken will take some time.</string>
+    <string-array name="names">
+        <item>Food</item>
+        <item>Road</item>
+        <item>service_issues</item>
+        <item>Other</item>
+    </string-array>
+</resources>
