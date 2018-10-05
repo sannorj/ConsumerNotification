@@ -71,13 +71,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LocationManager locMan;
     LocationListener locLin;
     LatLng currentLocation;
-
+    boolean mapBool =true;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED&&requestCode ==3){
+        if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             {
@@ -103,34 +103,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-        Intent intent = new Intent(getApplicationContext(),MapsActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),12,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        //showNotification("title","here you go",intent);
 
-        NotificationManager notiMan = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-
-            notiMan.createNotificationChannel(new NotificationChannel("12","channel_Name",NotificationManager.IMPORTANCE_LOW));
-
-        }
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext());
-        notificationBuilder
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle("asdas")
-                .setContentText("asdas")
-                .setContentIntent(pendingIntent)
-                .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
-                .setAutoCancel(false);
-
-
-
-        notiMan.notify((int)(System.currentTimeMillis()/1000),notificationBuilder.build());
-
-
-
-        //createNotification("asdasd","asdads");
-
+        setMap();
 
         //location
         locMan = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -139,26 +114,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onLocationChanged(Location location) {
 
-                currentLocation = new LatLng(location.getLatitude(),location.getLongitude());
-                Log.i("GeoFence", "current location : "+ currentLocation.toString());
+                //currentLocation = new LatLng(location.getLatitude(),location.getLongitude());
+                currentLocation = new LatLng(6.913785, 79.860882);
 
 
-                float[] results =new float[10];
-                if (!latlongList.isEmpty()) {
-                    LatLng lataa =latlongList.get(0);
-                    Location.distanceBetween(currentLocation.latitude, currentLocation.longitude,lataa.latitude , lataa.longitude, results);
-                    Log.i("location distance :", "" + String.valueOf(results[0]));
+                if (mapBool){
+                   // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,10f));
+                    //mMap.animateCamera(CameraUpdateFactory.zoomTo(16f), 4000, null);
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,16f),6000,null);
 
-                    try{
-                        createNotification("GEO Fence","message");
+
+                    float[] results =new float[10];
+
+                    if (!latlongList.isEmpty()) {
+
+                        for (int i=0;i<latlongList.size();i++){
+
+                            LatLng lataa =latlongList.get(i);
+                            Location.distanceBetween(currentLocation.latitude, currentLocation.longitude,lataa.latitude , lataa.longitude, results);
+
+                            if (results[i] <=200.0 && results[i]>= -200.0){
+
+                                showNotification("WE APP Notification","A post nearby your area ("+ Math.abs(results[i])+" km)",latlongList.get(i));
+
+                                Log.i("location distance :", "" + String.valueOf(results[i]));
+                            }
+
+                        }
+
+
                     }
-                    catch (Exception e){
-                        Log.i("location distance :", "aahaan");
-                    }
 
 
+                    mapBool =false;
                 }
-                //createGeofence(location.);
+
+
+
+
             }
 
             @Override
@@ -178,14 +171,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         };
 
 
+
+
+
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 3);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         } else {
 
             locMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locLin);
         }
-
 
 
 
@@ -264,28 +260,51 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
  //  mMap.addMarker(new MarkerOptions().position(new LatLng(lati,longi)).title("Food Issues").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
 
+//setMap
+    public void setMap(){
 
 
+        Intent intent = getIntent();
+
+        double latus = intent.getDoubleExtra("map_intent_lat",999.999) ;
+        double lonus =intent.getDoubleExtra("map_intent_long",999.999) ;
+
+        Log.i("location",""+latus + " , "+lonus);
+
+
+    }
 
 
     // Create notification
-    public Notification createNotification(String title,String msg) {
+    public void showNotification(String title, String content,LatLng latlng) {
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("default",
+                    "WE APP",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription("YOUR_NOTIFICATION_CHANNEL_DISCRIPTION");
+            mNotificationManager.createNotificationChannel(channel);
+        }
 
-        Intent intent = new Intent(this,MapsActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,PENDINGINTENT_REQUEST_CODE,intent,PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
-        notificationBuilder
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setColor(Color.RED)
-                .setContentTitle(title)
-                .setContentText(msg)
-                .setContentIntent(pendingIntent)
-                .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
-                .setAutoCancel(false);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "default")
+                .setSmallIcon(R.mipmap.ic_launcher) // notification icon
+                .setContentTitle(title) // title for notification
+                .setContentText(content)// message for notification
+                .setAutoCancel(true); // clear notification after click
 
-        return notificationBuilder.build();
+
+        Intent map_intent = new Intent(getApplicationContext(), MapsActivity.class);
+        map_intent.putExtra("map_intent_lat",latlng.latitude);
+        map_intent.putExtra("map_intent_long",latlng.longitude);
+        PendingIntent pi = PendingIntent.getActivity(this, 0, map_intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pi);
+        mNotificationManager.notify(0, mBuilder.build());
+
+
     }
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -302,11 +321,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
 
-
         LatLngBounds SL = new LatLngBounds(
                 new LatLng(5.8, 79), new LatLng(9.8, 82.5));
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SL.getCenter(),7.5f));
+       // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SL.getCenter(),7.5f));
 
 
 
