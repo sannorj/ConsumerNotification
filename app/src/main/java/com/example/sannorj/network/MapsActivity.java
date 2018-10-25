@@ -114,12 +114,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onLocationChanged(Location location) {
 
-                //currentLocation = new LatLng(location.getLatitude(),location.getLongitude());
-                currentLocation = new LatLng(6.913785, 79.860882);
+                currentLocation = new LatLng(location.getLatitude(),location.getLongitude());
+                //currentLocation = new LatLng(6.913785, 79.860882);
 
 
                 if (mapBool){
-                   // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,10f));
+                   //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,16f));
                     //mMap.animateCamera(CameraUpdateFactory.zoomTo(16f), 4000, null);
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,16f),6000,null);
 
@@ -135,7 +135,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                             if (results[i] <=200.0 && results[i]>= -200.0){
 
-                                showNotification("WE APP Notification","A post nearby your area ("+ Math.abs(results[i])+" km)",latlongList.get(i));
+                                showNotification("WE APP Notification","A "+cat+" post nearby your area ("+ Math.abs(results[i])+" km)",latlongList.get(i));
 
                                 Log.i("location distance :", "" + String.valueOf(results[i]));
                             }
@@ -216,26 +216,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                           cat = (String)child.child("type").getValue();
                           System.out.println("food is"+cat);
+                          String description = (String) child.child("description").getValue();
 
                         //  mMap.addMarker(new MarkerOptions().position(new LatLng(lati,longi)).title("Marer").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
                          // mMap.addMarker(new MarkerOptions().position(new LatLng(lati,longi)).title("Food Issues").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
                            if(cat.equals("Road"))
                             {
-                                mMap.addMarker(new MarkerOptions().position(new LatLng(lati,longi)).title("Road Issues").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                                mMap.addMarker(new MarkerOptions().position(new LatLng(lati,longi)).title("Road Issues").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).snippet(description));
 
 
                             }else if (cat.equals("Other"))
                             {
-                          mMap.addMarker(new MarkerOptions().position(new LatLng(lati,longi)).title("Other Issues").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                          mMap.addMarker(new MarkerOptions().position(new LatLng(lati,longi)).title("Other Issues").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).snippet(description));
 
                             }else if (cat.equals("service_issues"))
                            {
-                               mMap.addMarker(new MarkerOptions().position(new LatLng(lati,longi)).title("Service Issues").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+                               mMap.addMarker(new MarkerOptions().position(new LatLng(lati,longi)).title("Service Issues").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)).snippet(description));
 
                            }
                            else                           {
-                              mMap.addMarker(new MarkerOptions().position(new LatLng(lati,longi)).title("Food Issues").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                              mMap.addMarker(new MarkerOptions().position(new LatLng(lati,longi)).title("Food Issues").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).snippet(description));
 
                           }
 
@@ -324,7 +325,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLngBounds SL = new LatLngBounds(
                 new LatLng(5.8, 79), new LatLng(9.8, 82.5));
 
-       // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SL.getCenter(),7.5f));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SL.getCenter(),7.5f));
 
 
 
