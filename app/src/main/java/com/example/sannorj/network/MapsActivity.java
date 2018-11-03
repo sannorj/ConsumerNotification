@@ -17,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -41,8 +42,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.security.SignedObject;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -57,6 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Double lati,longi;
     String cat;
     ArrayList<LatLng> latlongList;
+    ArrayList<String> categoryList;
 
 
     private static final int PENDINGINTENT_REQUEST_CODE = 6;
@@ -67,7 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<Geofence> mGeofenceList;
     private PendingIntent mGeofencePendingIntent;
 
-
+    int NotificationID =0;
     LocationManager locMan;
     LocationListener locLin;
     LatLng currentLocation;
@@ -100,8 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         latlongList = new ArrayList<LatLng>();
-
-
+        categoryList = new ArrayList<String>();
 
         //showNotification("title","here you go",intent);
 
@@ -121,24 +124,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (mapBool){
                    //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,16f));
                     //mMap.animateCamera(CameraUpdateFactory.zoomTo(16f), 4000, null);
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,16f),6000,null);
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,16f),4000,null);
 
 
-                    float[] results =new float[10];
+                    float[] results =new float[20];
 
-                    if (!latlongList.isEmpty()) {
+                    if (!latlongList.isEmpty() && latlongList.size()==categoryList.size()) {
 
                         for (int i=0;i<latlongList.size();i++){
 
                             LatLng lataa =latlongList.get(i);
                             Location.distanceBetween(currentLocation.latitude, currentLocation.longitude,lataa.latitude , lataa.longitude, results);
 
-                            if (results[i] <=200.0 && results[i]>= -200.0){
+                            if (results[i] <= 2 && results[i]==0){
+                                    showNotification("WE APP Notification", "A " + categoryList.get(i) + " post nearby your area (" + results[i] + " km)", latlongList.get(i));
 
-                                showNotification("WE APP Notification","A "+cat+" post nearby your area ("+ Math.abs(results[i])+" km)",latlongList.get(i));
+                                    Log.i("location distance :", "" + String.valueOf(results[i]));
 
-                                Log.i("location distance :", "" + String.valueOf(results[i]));
                             }
+
 
                         }
 
@@ -194,6 +198,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         PostRef = FirebaseDatabase.getInstance().getReference().child("Posts");
 
 //every post check
+
         PostRef.addValueEventListener(new ValueEventListener() {
             @Override
 
@@ -215,6 +220,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
                           cat = (String)child.child("type").getValue();
+                          categoryList.add(cat);
                           System.out.println("food is"+cat);
                           String description = (String) child.child("description").getValue();
 
@@ -241,9 +247,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                           }
 
                       }
-
-
-
 
                       //mMap.addMarker(new MarkerOptions().position(new LatLng(lati,longi)).title("Marker in Sydney"));
                   }
@@ -278,6 +281,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // Create notification
     public void showNotification(String title, String content,LatLng latlng) {
+
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -301,7 +305,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         map_intent.putExtra("map_intent_long",latlng.longitude);
         PendingIntent pi = PendingIntent.getActivity(this, 0, map_intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pi);
-        mNotificationManager.notify(0, mBuilder.build());
+        mNotificationManager.notify(++NotificationID, mBuilder.build());
 
 
     }
